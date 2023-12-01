@@ -1,0 +1,3 @@
+- name: Run task if a condition is met
+  command: echo "This task runs when the condition is met"
+  when: some_variable == "desired_value"

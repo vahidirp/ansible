@@ -1,0 +1,4 @@
+- name: Ensure a line is present in a file
+  lineinfile:
+    path: /path/to/file
+    line: "desired_line"

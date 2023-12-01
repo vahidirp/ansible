@@ -1,0 +1,37 @@
+---
+- name: Connect to MySQL Docker Container
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Start MySQL Docker container
+      docker_container:
+        name: mysql-container
+        image: mysql:latest
+        env:
+          MYSQL_ROOT_PASSWORD: your_mysql_root_password
+        ports:
+          - "3306:3306"
+        detach: true
+
+    - name: Wait for MySQL to be ready
+      wait_for:
+        host: localhost
+        port: 3306
+        timeout: 60
+
+    - name: Change MySQL variables inside Docker container
+      mysql_variables:
+        login_user: root
+        login_password: your_mysql_root_password
+        login_host: 127.0.0.1
+        name: "variable_name"
+        value: "new_value"
+      loop:
+        - variable_name_1
+        - variable_name_2
+        # Add more variables as needed
+
+    - name: Stop MySQL Docker container
+      docker_container:
+        name: mysql-container
+        state: stopped

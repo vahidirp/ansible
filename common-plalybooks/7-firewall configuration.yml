@@ -1,0 +1,4 @@
+- name: Allow SSH through the firewall
+  ufw:
+    rule: allow
+    port: 22

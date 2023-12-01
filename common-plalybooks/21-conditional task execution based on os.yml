@@ -1,0 +1,4 @@
+- name: Run task only on Ubuntu
+  debug:
+    msg: "This task runs only on Ubuntu"
+  when: "'Ubuntu' in ansible_distribution"

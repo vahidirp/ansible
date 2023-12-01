@@ -1,0 +1,4 @@
+- name: Include encrypted variables
+  include_vars: sensitive_data.yml
+  vars_files:
+    - encrypted_data.yml

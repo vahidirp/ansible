@@ -1,0 +1,37 @@
+---
+- name: Install MariaDB and configure
+  hosts: your_target_servers
+  become: yes  # Run tasks with elevated privileges
+
+  tasks:
+    - name: Update apt package cache
+      apt:
+        update_cache: yes
+
+    - name: Install MariaDB server
+      apt:
+        name: mariadb-server
+        state: present
+
+    - name: Secure MariaDB installation
+      debconf:
+        name: 'mariadb-server'
+        question: 'mariadb-server/root_password'
+        vtype: 'password'
+        value: '{{ mariadb_root_password }}'
+        state: 'present'
+      notify: Restart MariaDB
+
+    - name: Set up MariaDB user and database
+      mysql_user:
+        name: '{{ mariadb_user }}'
+        password: '{{ mariadb_user_password }}'
+        priv: '*.*:ALL'
+        state: present
+      notify: Restart MariaDB
+
+  handlers:
+    - name: Restart MariaDB
+      service:
+        name: mariadb
+        state: restarted

@@ -1,0 +1,32 @@
+---
+- name: Deploy Redis with Docker
+  hosts: your_ubuntu_server
+  become: yes
+
+  tasks:
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+
+    - name: Install Docker Compose
+      apt:
+        name: docker-compose
+        state: present
+
+    - name: Start Docker service
+      service:
+        name: docker
+        state: started
+
+    - name: Upload Docker Compose file
+      copy:
+        src: /docker-compose.yml
+        dest: /home/d/redis/docker-compose.yml
+
+    - name: Change directory to /home/d/redis
+      become_user: d
+      command: cd /home/d/redis
+
+    - name: Run Docker Compose
+      command: docker-compose up -d

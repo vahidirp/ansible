@@ -1,0 +1,99 @@
+---
+- name: Install Zabbix with Nginx and MySQL
+  hosts: zabbix_servers
+  become: true
+
+  tasks:
+    - name: Update APT package cache
+      apt:
+        update_cache: yes
+
+    - name: Install prerequisites
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - nginx
+        - mysql-server
+        - php
+        - php-mysql
+        - php-fpm
+        - php-gd
+        - php-bcmath
+        - php-xml
+        - php-mbstring
+        - php-ldap
+        - php-xmlrpc
+        - snmp
+        - snmpd
+
+    - name: Add Zabbix repository
+      apt_repository:
+        repo: "deb http://repo.zabbix.com/zabbix/5.0/ubuntu focal main"
+        state: present
+        update_cache: yes
+
+    - name: Import Zabbix GPG key
+      apt_key:
+        url: "https://repo.zabbix.com/zabbix-official-repo.key"
+        state: present
+
+    - name: Install Zabbix Server and Frontend
+      apt:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - zabbix-server-mysql
+        - zabbix-frontend-nginx
+        - zabbix-agent
+
+    - name: Configure MySQL for Zabbix
+      mysql_user:
+        name: zabbix
+        password: "{{ zabbix_mysql_password }}"
+        priv: "*.*:ALL"
+        host: localhost
+        state: present
+
+    - name: Import Zabbix Database Schema
+      mysql_db:
+        name: zabbix
+        state: present
+      environment:
+        MYSQL_USER: zabbix
+        MYSQL_PASSWORD: "{{ zabbix_mysql_password }}"
+      become_user: zabbix
+      become: true
+      args:
+        executable: /bin/bash
+        chdir: "/usr/share/doc/zabbix-server-mysql"
+
+    - name: Configure Zabbix Server
+      template:
+        src: zabbix_server.conf.j2
+        dest: /etc/zabbix/zabbix_server.conf
+      notify: restart zabbix-server
+
+    - name: Configure Nginx for Zabbix
+      template:
+        src: zabbix_nginx.conf.j2
+        dest: /etc/nginx/sites-available/zabbix
+      notify: restart nginx
+
+    - name: Enable Nginx Zabbix site
+      file:
+        src: /etc/nginx/sites-available/zabbix
+        dest: /etc/nginx/sites-enabled/zabbix
+        state: link
+      notify: restart nginx
+
+  handlers:
+    - name: restart zabbix-server
+      service:
+        name: zabbix-server
+        state: restarted
+
+    - name: restart nginx
+      service:
+        name: nginx
+        state: restarted

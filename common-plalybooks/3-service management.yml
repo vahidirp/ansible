@@ -1,0 +1,5 @@
+- name: Ensure service is started and enabled
+  systemd:
+    name: myservice
+    state: started
+    enabled: yes

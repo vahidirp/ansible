@@ -1,0 +1,4 @@
+- name: Set file permissions
+  file:
+    path: /path/to/file
+    mode: "0644"

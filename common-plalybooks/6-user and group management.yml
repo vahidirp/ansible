@@ -1,0 +1,9 @@
+- name: Ensure user exists
+  user:
+    name: john
+    state: present
+
+- name: Ensure group exists
+  group:
+    name: developers
+    state: present

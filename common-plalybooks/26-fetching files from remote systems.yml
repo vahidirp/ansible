@@ -1,0 +1,4 @@
+- name: Fetch files from remote system
+  fetch:
+    src: /path/on/remote
+    dest: /local/destination

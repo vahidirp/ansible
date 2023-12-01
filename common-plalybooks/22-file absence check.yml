@@ -1,0 +1,9 @@
+- name: Check if a file is absent
+  stat:
+    path: /path/to/file
+  register: file_check_result
+
+- name: Debug message if file is absent
+  debug:
+    msg: "The file is absent"
+  when: file_check_result.stat.exists == False

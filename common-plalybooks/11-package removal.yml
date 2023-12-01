@@ -1,0 +1,7 @@
+- name: Remove packages
+  apt:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - unwanted-package1
+    - unwanted-package2

@@ -1,0 +1,10 @@
+- name: Block with error handling
+  block:
+    - name: Task 1
+      command: /path/to/command1
+    - name: Task 2 (might fail)
+      command: /path/to/command2
+  rescue:
+    - name: Handle errors
+      debug:
+        msg: "An error occurred, handling it gracefully"

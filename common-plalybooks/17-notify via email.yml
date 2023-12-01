@@ -1,0 +1,6 @@
+- name: Send email notification
+  mail:
+    to: "admin@example.com"
+    subject: "Ansible Playbook Result"
+    body: "The playbook has completed successfully."
+  delegate_to: localhost

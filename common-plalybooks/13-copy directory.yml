@@ -1,0 +1,4 @@
+- name: Copy directory
+  copy:
+    src: /path/to/source/directory
+    dest: /path/to/destination/directory

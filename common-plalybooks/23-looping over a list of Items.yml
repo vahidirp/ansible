@@ -1,0 +1,7 @@
+- name: Loop over items
+  debug:
+    msg: "Item: {{ item }}"
+  loop:
+    - item1
+    - item2
+    - item3

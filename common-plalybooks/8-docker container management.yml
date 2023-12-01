@@ -1,0 +1,10 @@
+- name: Ensure Docker containers are running
+  docker_container:
+    name: "{{ item.name }}"
+    image: "{{ item.image }}"
+    state: started
+    ports:
+      - "{{ item.ports }}"
+  loop:
+    - { name: "nginx-container", image: "nginx:latest", ports: "8081:80" }
+    - { name: "httpd-container", image: "httpd:latest", ports: "8082:80" }

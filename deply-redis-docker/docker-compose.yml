@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  redis:
+    image: "redis:latest"
+    container_name: redis_server
+    ports:
+      - "6379:6379"
+    environment:
+      - REDIS_PASSWORD=your_password
+      - REDIS_BIND=0.0.0.0
+      - REDIS_PORT=6379
+      - REDIS_REQUIRE_PASS=yes  # Enables password authentication
+      - REDIS_MAXMEMORY=256mb   # Sets the maximum memory Redis can use
+      - REDIS_MAXMEMORY_POLICY=allkeys-lru  # Specifies the eviction policy for keys when reaching max memory
+      - REDIS_APPENDONLY=yes    # Enables append-only file persistence
+      - REDIS_APPENDFSYNC=everysec  # Specifies how often the append-only file is synced to disk
+      - REDIS_LOGLEVEL=notice   # Sets the logging level (options: debug, verbose, notice, warning)
+      - REDIS_DATABASES=16      # Sets the number of databases
+      - REDIS_SAVE_900=1        # Snapshot the database if at least 1 key changed and 900 seconds have passed
+      - REDIS_SAVE_300=10       # Snapshot the database if at least 10 keys changed and 300 seconds have passed
+      - REDIS_SAVE_60=10000     # Snapshot the database if at least 10000 keys changed and 60 seconds have passed
+    volumes:
+      - redis_data:/data
+    networks:
+       - redis 
+
+networks:
+  redis:
+   external: true

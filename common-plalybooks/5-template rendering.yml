@@ -1,0 +1,4 @@
+- name: Render a template
+  template:
+    src: template.j2
+    dest: /path/to/destination/file
